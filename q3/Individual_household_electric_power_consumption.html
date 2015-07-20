@@ -111,7 +111,7 @@ datatable$Day  = as.POSIXlt(datatable$Date)$yday</code></pre>
                                                          Sub_metering_3      = sum(Sub_metering_3)/1000*60)</code></pre>
 <pre class="r"><code>png(file=&quot;plot1.png&quot;,width=480,height=480)
 with(datatable0, {
-    plot(Date, Sub_metering_3, ylab = &quot;Energy sub metering&quot;, type = &quot;n&quot;, xlab = &quot;&quot;)
+    plot(Date, Sub_metering_3, ylab = &quot;Energy sub metering (kilowatts)&quot;, type = &quot;n&quot;, xlab = &quot;Year&quot;, main = &quot;Daily Energy consumption (kilowatts) by sub metering \n from 2006 to 2010&quot;)
     lines(Date, Sub_metering_1, col=&quot;black&quot;)
     lines(Date, Sub_metering_2, col=&quot;red&quot;)
     lines(Date, Sub_metering_3, col=&quot;blue&quot;)
@@ -126,7 +126,7 @@ dev.off()</code></pre>
                                                          Sub_metering_3      = sum(Sub_metering_3)/1000*60)</code></pre>
 <pre class="r"><code>png(file=&quot;plot2.png&quot;,width=480,height=480)
 with(datatable1, {
-    plot(Week, Sub_metering_3, ylab = &quot;Energy sub metering&quot;, type = &quot;n&quot;, xlab = &quot;&quot;)
+    plot(Week, Sub_metering_3, ylab = &quot;Energy sub metering (kilowatts)&quot;, type = &quot;n&quot;, xlab = &quot;Week&quot;, main = &quot;Weekly Energy consumption (kilowatts) by sub metering \n averaged over 2006-2010&quot;)
     lines(Week, Sub_metering_1, col=&quot;black&quot;)
     lines(Week, Sub_metering_2, col=&quot;red&quot;)
     lines(Week, Sub_metering_3, col=&quot;blue&quot;)

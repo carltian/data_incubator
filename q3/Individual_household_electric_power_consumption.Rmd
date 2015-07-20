@@ -61,7 +61,7 @@ datatable0 <- datatable %>% group_by(Date) %>% summarise(Global_active_power = s
 ```{r}
 png(file="plot1.png",width=480,height=480)
 with(datatable0, {
-    plot(Date, Sub_metering_3, ylab = "Energy sub metering", type = "n", xlab = "")
+    plot(Date, Sub_metering_3, ylab = "Energy sub metering (kilowatts)", type = "n", xlab = "Year", main = "Daily Energy consumption (kilowatts) by sub metering \n from 2006 to 2010")
     lines(Date, Sub_metering_1, col="black")
     lines(Date, Sub_metering_2, col="red")
     lines(Date, Sub_metering_3, col="blue")
@@ -80,7 +80,7 @@ datatable1 <- datatable %>% group_by(Week) %>% summarise(Global_active_power = s
 ```{r}
 png(file="plot2.png",width=480,height=480)
 with(datatable1, {
-    plot(Week, Sub_metering_3, ylab = "Energy sub metering", type = "n", xlab = "")
+    plot(Week, Sub_metering_3, ylab = "Energy sub metering (kilowatts)", type = "n", xlab = "Week", main = "Weekly Energy consumption (kilowatts) by sub metering \n averaged over 2006-2010")
     lines(Week, Sub_metering_1, col="black")
     lines(Week, Sub_metering_2, col="red")
     lines(Week, Sub_metering_3, col="blue")
