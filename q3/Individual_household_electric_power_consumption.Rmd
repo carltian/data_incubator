@@ -1,0 +1,90 @@
+---
+title: "Individual Household Electric Power Consumption"
+output: 
+html_document:
+pandoc_args: [
+"+RTS", "-K64m",
+"-RTS"
+]
+---
+
+```{r}
+library(dplyr)
+library(ggplot2)
+```
+
+```{r}
+## Download the file if it does not exist
+if (!file.exists("household_power_consumption.txt")) {
+    if (!file.exists("household_power_consumption.zip")) {
+        url="https://archive.ics.uci.edu/ml/machine-learning-databases/00235/household_power_consumption.zip"
+        download.file(url, destfile="./household_power_consumption.zip", method="curl")
+        dateDownloaded <- date()
+        unzip("household_power_consumption.zip")
+    } else {
+        unzip("household_power_consumption.zip")
+    }
+}
+```
+
+```{r datatable, cache = TRUE}
+## Read the data
+datatable <- read.table("household_power_consumption.txt", sep = ";", header = T, na.strings = "", stringsAsFactors = FALSE)
+```
+
+```{r dependson = datatable, cache = TRUE}
+## Missing values
+# The documents(https://archive.ics.uci.edu/ml/datasets/Individual+household+electric+power+consumption) says the fraction of missing values is 1.25%, so we will ignore them.
+datatable <- datatable[complete.cases(datatable),]
+
+datatable <- mutate(datatable, 
+                    Date                  = as.Date(Date, "%d/%m/%Y"),
+                    Week                  = strftime(as.POSIXlt(Date), format="%W"),
+                    Global_active_power   = as.numeric(Global_active_power), 
+                    Global_reactive_power = as.numeric(Global_reactive_power),
+                    Voltage               = as.numeric(Voltage),
+                    Global_intensity      = as.numeric(Global_intensity),
+                    Sub_metering_1        = as.numeric(Sub_metering_1),
+                    Sub_metering_2        = as.numeric(Sub_metering_2),
+                    Sub_metering_3        = as.numeric(Sub_metering_3))
+datatable$Year  = as.POSIXlt(datatable$Date)$year + 1900
+datatable$Day  = as.POSIXlt(datatable$Date)$yday
+```
+
+```{r}
+datatable0 <- datatable %>% group_by(Date) %>% summarise(Global_active_power = sum(Global_active_power),
+                                                         Sub_metering_1      = sum(Sub_metering_1)/1000*60,
+                                                         Sub_metering_2      = sum(Sub_metering_2)/1000*60,
+                                                         Sub_metering_3      = sum(Sub_metering_3)/1000*60)
+```
+
+```{r}
+png(file="plot1.png",width=480,height=480)
+with(datatable0, {
+    plot(Date, Sub_metering_3, ylab = "Energy sub metering", type = "n", xlab = "")
+    lines(Date, Sub_metering_1, col="black")
+    lines(Date, Sub_metering_2, col="red")
+    lines(Date, Sub_metering_3, col="blue")
+    legend("topright", legend = c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"), col = c("black", "red", "blue"), lwd = 2, bty = "n")
+})
+dev.off()
+```
+
+```{r}
+datatable1 <- datatable %>% group_by(Week) %>% summarise(Global_active_power = sum(Global_active_power),
+                                                         Sub_metering_1      = sum(Sub_metering_1)/1000*60,
+                                                         Sub_metering_2      = sum(Sub_metering_2)/1000*60,
+                                                         Sub_metering_3      = sum(Sub_metering_3)/1000*60)
+```
+
+```{r}
+png(file="plot2.png",width=480,height=480)
+with(datatable1, {
+    plot(Week, Sub_metering_3, ylab = "Energy sub metering", type = "n", xlab = "")
+    lines(Week, Sub_metering_1, col="black")
+    lines(Week, Sub_metering_2, col="red")
+    lines(Week, Sub_metering_3, col="blue")
+    legend("topright", legend = c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"), col = c("black", "red", "blue"), lwd = 2, bty = "n")
+})
+dev.off()
+```
